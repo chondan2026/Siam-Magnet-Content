@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Siam Magnet - Social Media Strategy</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600&family=Trirong:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Tailwind Configuration -->
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            blue: '#004A6F',
+                            skin: '#FFF2E6',
+                            brown: '#4A3B32',
+                            dark: '#1A1A1A',
+                            gray: '#555555'
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Prompt', 'sans-serif'],
+                        serif: ['Trirong', 'serif'],
+                    },
+                    animation: {
+                        'fade-in': 'fadeIn 0.5s ease-out',
+                        'slide-up': 'slideUp 0.5s ease-out',
+                    },
+                    keyframes: {
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FFF2E6;
+            background-image: radial-gradient(#004A6F33 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
+        
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #FFF2E6; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #004A6F; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4A3B32; 
+        }
+    </style>
+
+    <!-- React & ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
+    
+    <!-- Babel for JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="font-sans text-brand-dark antialiased min-h-screen">
+    
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- Data ---
+        const fbData = {
+            target: {
+                audience: "นักท่องเที่ยวชาวเอเชีย และไทย รวมถึงกลุ่มครอบครัว (Family Travelers)",
+                behavior: "มองหาความคุ้มค่า ชอบอ่านรีวิว ชอบเซฟไกด์บุ๊กหรือเช็กลิสต์ (Save & Share) สนใจเรื่องราคา โปรโมชัน และต้องการรู้พิกัดร้านที่ชัดเจน ซื้อของฝากทีละเยอะๆ",
+                hook: "ความน่ารักของมาสคอต (Bei Fen) ที่ดูเป็นมิตรเหมือนเพื่อนพาเที่ยว"
+            },
+            goals: "สร้าง Engagement ความสนุกสนาน และนำเสนอสินค้า Promotion แจกไกด์บุ๊ก, ปิดการขาย",
+            times: [
+                { day: "วันจันทร์", time: "12.00" },
+                { day: "วันพฤหัสบดี", time: "12.00 (แนะนำที่สุด)", highlight: true },
+                { day: "วันศุกร์", time: "13.00" }
+            ],
+            caption: {
+                tone: "สนุกสนาน เป็นกันเอง กระตือรือร้น (Energetic) เหมือนไกด์ท้องถิ่นหรือเพื่อนสาวที่กำลังป้ายยาไอเทมเด็ด",
+                lang: "ใช้ภาษาอังกฤษเป็นแกนหลักและภาษาไทย",
+                structure: [
+                    { title: "Headline", desc: "ต้องดึงดูดสายตาตั้งแต่วินาทีแรก" },
+                    { title: "Body", desc: "ให้ข้อมูลที่เป็นประโยชน์แบบตรงไปตรงมา (Informative) ใส่ราคาชัดเจน" },
+                    { title: "Formatting", desc: "ใช้ Emoji น่ารักๆ เพื่อแบ่งวรรคตอนและทำให้ข้อความดูไม่น่าเบื่อ" },
+                    { title: "CTA", desc: "ชี้เป้าการขายแบบตรงๆ (Hard Sell ได้) เช่น แปะลิงก์ Google Maps ของหน้าร้าน, ช่องทางออนไลน์ หรือบอกโปรโมชัน" }
+                ]
+            }
+        };
+
+        const igData = {
+            target: {
+                audience: "นักท่องเที่ยวชาวตะวันตก (ยุโรป, อเมริกา, ออสเตรเลีย) รวมถึงกลุ่ม Gen Z และ Millennials ทั่วโลกที่เป็น Solo Traveler หรือคู่รัก",
+                behavior: "ให้คุณค่ากับงานดีไซน์ (Design-conscious) งานคราฟต์ สุนทรียภาพ และประสบการณ์ (Vibes) ยอมจ่ายแพงกว่าเพื่อของที่ระลึกที่ดูมีรสนิยมและมีเรื่องราว ไม่ชอบการถูกยัดเยียดขายของ",
+                hook: "ภาพถ่ายที่สวยงามราวกับนิตยสาร ความรู้สึกคิดถึง (Nostalgia) และความทรงจำจากการเดินทาง"
+            },
+            goals: "Showcase สร้าง Brand Image, เล่าเรื่องราว, โชว์งานดีไซน์",
+            times: [
+                { day: "วันจันทร์", time: "12.00 (แนะนำที่สุด)", highlight: true },
+                { day: "วันพฤหัสบดี", time: "12.00" },
+                { day: "วันศุกร์", time: "13.00" }
+            ],
+            caption: {
+                tone: "นุ่มนวล สละสลวย สร้างแรงบันดาลใจ (Poetic & Inspiring) และดูเป็นมืออาชีพ (Sophisticated)",
+                lang: "ใช้ ภาษาอังกฤษ เป็นหลักเพียงภาษาเดียว เพื่อคุมโทนความมินิมอลและอินเตอร์ (หากมีลูกค้ากลุ่มอื่นเยอะ ใช้ฟีเจอร์ See Translation แทน)",
+                structure: [
+                    { title: "Storytelling", desc: "เล่าเรื่องราวเบื้องหลังของสถานที่นั้นๆ หรือที่มาของแรงบันดาลใจในการออกแบบสินค้าชิ้นนี้ (Craftsmanship & Heritage)" },
+                    { title: "Formatting", desc: "จัดย่อหน้าให้สะอาดตา มีพื้นที่ว่าง (White space) เยอะๆ ใช้ Emoji ให้น้อยที่สุด ไม่ใส่ราคาในแคปชันเพื่อรักษาความพรีเมียม" },
+                    { title: "Hashtags & Location", desc: "สำคัญมากต้องปักหมุด Location สถานที่ท่องเที่ยว และใช้ Hashtag ภาษาอังกฤษที่นักท่องเที่ยวใช้ค้นหาจริงๆ (เช่น #ChiangMaiVibes #ThaiSouvenir #TravelMemories)" }
+                ]
+            }
+        };
+
+        const pillarsData = {
+            awareness: [
+                { title: "Siam Magnet Pop Up & Events", desc: "โชว์ภาพและเล่าเรื่องประสบการณ์สถานที่ที่แบรนด์เคยผ่าน ผ่านอีเว้นท์และป็อปอัพต่างๆ", icon: "fa-store" },
+                { title: "Meaning Behind The Design", desc: "บอกเล่าเรื่องราวแนวคิดงานดีไซน์ของที่ระลึกชิ้นนั้นๆที่ถูกหยิบมาเล่าเรื่องราว เสริมภาพลักษณ์ด้านความประณีตและพรีเมียม เน้นภาพสวย", icon: "fa-palette" }
+            ],
+            engagement: [
+                { category: "สถานที่", items: [
+                    { title: "อัพเดตกรุงเทพ ผ่านย่านยอดฮิต", desc: "มาสคอตพาเที่ยวที่ฮิตต่างๆผ่านการคมนาคมที่แตกต่างหลากหลาย", icon: "fa-city" },
+                    { title: "ช็อปปิ้งห้างกรุงเทพ", desc: "พาช็อปปิ้งพร้อมแปะพิกัดร้าน", icon: "fa-bag-shopping" },
+                    { title: "หน้าฝนแอ่วดอย", desc: "อัปเดตที่เที่ยวธรรมชาติหน้าฝน + ดอกไม้ภาคเหนือ", icon: "fa-mountain-sun" },
+                    { title: "สถานที่เดทโรแมนติก", desc: "แนะนำสถานที่สำหรับคู่รัก", icon: "fa-heart" },
+                    { title: "One day trip with...", desc: "ให้มาสคอตนำเที่ยวในธีมท่องเที่ยวต่างๆ", icon: "fa-map-location-dot" }
+                ]},
+                { category: "อาหาร", items: [
+                    { title: "พาชิมผลไม้ไทยตามฤดูกาล", desc: "และแนะนำเมนูจากผลไม้นั้นๆ", icon: "fa-lemon" },
+                    { title: "Cooking อาหารไทย", desc: "เมนูไหนใช้วัตถุดิบอะไรบ้าง (แจกสูตรอาหาร)", icon: "fa-kitchen-set" },
+                    { title: "Thai Food History", desc: "ประวัติเมนูขึ้นชื่อหรือวัตถุดิบขึ้นชื่อต่างๆ", icon: "fa-book-open" }
+                ]},
+                { category: "วัฒนธรรม", items: [
+                    { title: "ชุดไทยพาเที่ยว", desc: "ชุด + สถานที่สำคัญ และเรื่องราวของชุดไทยแบบนั้นๆ", icon: "fa-masks-theater" }
+                ]}
+            ],
+            sales: [
+                { title: "Packing List", desc: "มาเที่ยวไทยซื้ออะไรดี (ของฝากยอดนิยม + สินค้าเรา)", icon: "fa-suitcase" },
+                { title: "Mix & Match (Total Look)", desc: "Match สินค้า Lifestyle ของเราอาทิเช่น กระเป๋าผ้า ลิปเคสผ่านลุคต่างๆของตัวมาสคอต", icon: "fa-shirt" },
+                { title: "ทริคการเลือกของฝาก (Gift Like a pro)", desc: "เทคนิคการเลือกของฝาก (ไทน์อินสินค้า)", icon: "fa-gift" },
+                { title: "การใช้งานสินค้า", desc: "รูปแบบการใช้งานสินค้าต่างๆเช่น กระเป๋า กระบอกน้ำเก็บความเย็นฯ", icon: "fa-box-open" },
+                { title: "Style with memory", desc: "การนำสินค้าของเราไปใช้ในชีวิตประจำวัน เน้นรูปภาพสวยงาม", icon: "fa-camera-retro" }
+            ]
+        };
+
+        // --- Components ---
+        const Card = ({ children, className = "" }) => (
+            <div className={`bg-white rounded-xl p-6 shadow-sm border border-brand-brown/30 hover:shadow-md transition-shadow duration-300 ${className}`}>
+                {children}
+            </div>
+        );
+
+        const PlatformStrategy = ({ data, platform }) => {
+            const isFb = platform === 'facebook';
+            return (
+                <div className="space-y-8 animate-fade-in">
+                    {/* Hero Section */}
+                    <div className="flex flex-col md:flex-row gap-6 items-center bg-white rounded-2xl p-8 border-l-8 shadow-sm" style={{ borderLeftColor: isFb ? '#1877F2' : '#E1306C' }}>
+                        <div className="text-6xl">
+                            {isFb ? <i className="fa-brands fa-facebook text-[#1877F2]"></i> : <i className="fa-brands fa-instagram text-[#E1306C]"></i>}
+                        </div>
+                        <div>
+                            <h2 className="text-3xl font-serif font-bold text-brand-dark mb-2">
+                                {isFb ? 'Facebook Strategy' : 'Instagram Strategy'}
+                            </h2>
+                            <p className="text-brand-gray text-lg">{data.goals}</p>
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        {/* Target Audience */}
+                        <Card className="flex flex-col gap-4">
+                            <h3 className="text-xl font-bold text-brand-blue font-serif flex items-center gap-2 border-b border-brand-brown/30 pb-3">
+                                <i className="fa-solid fa-users"></i> กลุ่มเป้าหมายหลัก
+                            </h3>
+                            <div>
+                                <h4 className="font-semibold text-brand-dark mb-1">สัญชาติ/กลุ่ม:</h4>
+                                <p className="text-brand-gray">{data.target.audience}</p>
+                            </div>
+                            <div>
+                                <h4 className="font-semibold text-brand-dark mb-1">พฤติกรรม:</h4>
+                                <p className="text-brand-gray">{data.target.behavior}</p>
+                            </div>
+                            <div className="bg-brand-skin p-4 rounded-lg border border-brand-brown/20 mt-2">
+                                <h4 className="font-semibold text-brand-brown mb-1"><i className="fa-solid fa-link"></i> จุดเชื่อมโยง (Hook):</h4>
+                                <p className="text-brand-dark">{data.target.hook}</p>
+                            </div>
+                        </Card>
+
+                        {/* Timing & Summary */}
+                        <div className="space-y-6">
+                            <Card>
+                                <h3 className="text-xl font-bold text-brand-blue font-serif flex items-center gap-2 border-b border-brand-brown/30 pb-3 mb-4">
+                                    <i className="fa-regular fa-clock"></i> ตารางเวลาการอัปโหลด
+                                </h3>
+                                <ul className="space-y-3">
+                                    {data.times.map((t, idx) => (
+                                        <li key={idx} className={`flex items-center justify-between p-3 rounded-lg ${t.highlight ? 'bg-brand-blue/10 border border-brand-blue/20 font-semibold' : 'bg-gray-50'}`}>
+                                            <span className="text-brand-dark">{t.day}</span>
+                                            <span className={t.highlight ? 'text-brand-blue' : 'text-brand-gray'}>{t.time}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </Card>
+                            
+                            <Card className="bg-gradient-to-br from-brand-blue/5 to-brand-brown/5">
+                                <h3 className="text-xl font-bold text-brand-blue font-serif flex items-center gap-2 mb-3">
+                                    <i className="fa-solid fa-bullseye"></i> เป้าหมายหลัก
+                                </h3>
+                                <p className="text-lg font-medium text-brand-dark leading-relaxed">
+                                    {isFb ? "เน้นความสนุกสนาน เป็นกันเอง + Informative + Call To Action (ปิดการขาย)" : "เน้นอารมณ์ความรู้สึก ประสบการณ์ Emotional + Story Telling + เน้นความ Premium"}
+                                </p>
+                            </Card>
+                        </div>
+                    </div>
+
+                    {/* Caption Guidelines */}
+                    <Card>
+                        <h3 className="text-2xl font-bold text-brand-blue font-serif flex items-center gap-2 border-b border-brand-brown/30 pb-4 mb-6">
+                            <i className="fa-solid fa-pen-nib"></i> แนวทางการสร้างแคปชัน (Caption Guidelines)
+                        </h3>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                            <div className="space-y-4">
+                                <div className="flex gap-4 items-start">
+                                    <div className="bg-brand-brown/20 p-3 rounded-full text-brand-brown mt-1">
+                                        <i className="fa-solid fa-comment-dots text-xl w-6 text-center"></i>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-brand-dark text-lg">Tone of Voice</h4>
+                                        <p className="text-brand-gray">{data.caption.tone}</p>
+                                    </div>
+                                </div>
+                                <div className="flex gap-4 items-start">
+                                    <div className="bg-brand-brown/20 p-3 rounded-full text-brand-brown mt-1">
+                                        <i className="fa-solid fa-language text-xl w-6 text-center"></i>
+                                    </div>
+                                    <div>
+                                        <h4 className="font-bold text-brand-dark text-lg">ภาษา</h4>
+                                        <p className="text-brand-gray">{data.caption.lang}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h4 className="font-bold text-brand-dark text-lg mb-3 flex items-center gap-2">
+                                    <i className="fa-solid fa-layer-group text-brand-brown"></i> โครงสร้างเนื้อหา
+                                </h4>
+                                <div className="space-y-3">
+                                    {data.caption.structure.map((item, idx) => (
+                                        <div key={idx} className="bg-gray-50 p-3 rounded-lg border-l-4 border-brand-brown">
+                                            <span className="font-semibold text-brand-blue mr-2">{item.title}:</span>
+                                            <span className="text-brand-gray text-sm">{item.desc}</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+                    </Card>
+                </div>
+            );
+        };
+
+        const ContentPillars = () => {
+            const [activePillar, setActivePillar] = useState('all');
+
+            const filterPillars = (type) => activePillar === 'all' || activePillar === type;
+
+            return (
+                <div className="animate-fade-in space-y-8">
+                    <div className="text-center mb-8">
+                        <h2 className="text-3xl font-serif font-bold text-brand-blue mb-4">Content Pillars</h2>
+                        <div className="flex flex-wrap justify-center gap-2 md:gap-4">
+                            {['all', 'awareness', 'engagement', 'sales'].map(type => (
+                                <button 
+                                    key={type}
+                                    onClick={() => setActivePillar(type)}
+                                    className={`px-6 py-2 rounded-full font-medium transition-all duration-300 capitalize ${activePillar === type ? 'bg-brand-blue text-white shadow-lg' : 'bg-white text-brand-gray border border-brand-brown/30 hover:border-brand-blue hover:text-brand-blue'}`}
+                                >
+                                    {type}
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    {/* Awareness */}
+                    {filterPillars('awareness') && (
+                        <div className="animate-slide-up">
+                            <h3 className="text-2xl font-serif font-bold text-brand-dark mb-4 flex items-center gap-2">
+                                <span className="bg-brand-brown text-white w-8 h-8 flex items-center justify-center rounded-full text-sm">1</span> 
+                                Awareness <span className="text-base font-sans font-normal text-brand-gray">(สร้างการรับรู้แบรนด์)</span>
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                {pillarsData.awareness.map((item, idx) => (
+                                    <div key={idx} className="bg-white p-6 rounded-xl border border-brand-brown/20 flex gap-4 hover:shadow-md transition-shadow group">
+                                        <div className="text-3xl text-brand-brown/50 group-hover:text-brand-brown transition-colors pt-1">
+                                            <i className={`fa-solid ${item.icon}`}></i>
+                                        </div>
+                                        <div>
+                                            <h4 className="font-bold text-lg text-brand-blue mb-1">{item.title}</h4>
+                                            <p className="text-brand-gray text-sm leading-relaxed">{item.desc}</p>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Engagement */}
+                    {filterPillars('engagement') && (
+                        <div className="animate-slide-up">
+                            <h3 className="text-2xl font-serif font-bold text-brand-dark mb-4 mt-8 flex items-center gap-2">
+                                <span className="bg-brand-brown text-white w-8 h-8 flex items-center justify-center rounded-full text-sm">2</span> 
+                                Engagement <span className="text-base font-sans font-normal text-brand-gray">(ให้ข้อมูลที่เป็นประโยชน์, ประสบการณ์ร่วม)</span>
+                            </h3>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                {pillarsData.engagement.map((category, idx) => (
+                                    <div key={idx} className="bg-brand-skin border border-brand-brown/30 rounded-xl p-5">
+                                        <h4 className="font-bold text-lg text-brand-dark border-b border-brand-brown/30 pb-2 mb-4 text-center">
+                                            {category.category}
+                                        </h4>
+                                        <div className="space-y-3">
+                                            {category.items.map((item, i) => (
+                                                <div key={i} className="bg-white p-3 rounded-lg shadow-sm hover:shadow-md transition-shadow">
+                                                    <div className="font-semibold text-brand-blue text-sm mb-1 flex items-center gap-2">
+                                                        <i className={`fa-solid ${item.icon} text-brand-brown`}></i> {item.title}
+                                                    </div>
+                                                    <div className="text-xs text-brand-gray">{item.desc}</div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Sales */}
+                    {filterPillars('sales') && (
+                        <div className="animate-slide-up">
+                            <h3 className="text-2xl font-serif font-bold text-brand-dark mb-4 mt-8 flex items-center gap-2">
+                                <span className="bg-brand-brown text-white w-8 h-8 flex items-center justify-center rounded-full text-sm">3</span> 
+                                Sales <span className="text-base font-sans font-normal text-brand-gray">(เน้นโชว์สินค้า)</span>
+                            </h3>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                                {pillarsData.sales.map((item, idx) => (
+                                    <div key={idx} className="bg-white p-5 rounded-xl border border-brand-brown/20 flex flex-col items-center text-center hover:-translate-y-1 hover:shadow-lg transition-all duration-300">
+                                        <div className="w-16 h-16 bg-brand-skin rounded-full flex items-center justify-center text-2xl text-brand-blue mb-3">
+                                            <i className={`fa-solid ${item.icon}`}></i>
+                                        </div>
+                                        <h4 className="font-bold text-brand-dark mb-2">{item.title}</h4>
+                                        <p className="text-brand-gray text-sm">{item.desc}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
+            );
+        };
+
+        const App = () => {
+            const [activeTab, setActiveTab] = useState('facebook');
+
+            return (
+                <div className="max-w-6xl mx-auto px-4 py-8 md:py-12">
+                    {/* Header */}
+                    <header className="text-center mb-10 animate-slide-up">
+                        <h1 className="text-4xl md:text-5xl font-serif font-bold text-brand-dark mb-3">Siam Magnet</h1>
+                        <p className="text-xl text-brand-gray tracking-wide">Social Media Strategy & Content Plan</p>
+                        <div className="w-24 h-1 bg-brand-brown mx-auto mt-6 rounded-full"></div>
+                    </header>
+
+                    {/* Navigation Tabs */}
+                    <nav className="flex justify-center gap-2 md:gap-6 mb-10 overflow-x-auto pb-2">
+                        {[
+                            { id: 'facebook', label: 'Facebook', icon: 'fa-facebook' },
+                            { id: 'instagram', label: 'Instagram', icon: 'fa-instagram' },
+                            { id: 'pillars', label: 'Content Pillars', icon: 'fa-layer-group' }
+                        ].map(tab => (
+                            <button
+                                key={tab.id}
+                                onClick={() => setActiveTab(tab.id)}
+                                className={`flex items-center gap-2 px-6 py-3 rounded-xl font-bold transition-all duration-300 whitespace-nowrap
+                                    ${activeTab === tab.id 
+                                        ? 'bg-brand-dark text-brand-skin shadow-xl scale-105' 
+                                        : 'bg-white text-brand-gray hover:bg-brand-skin border border-brand-brown/20'}`}
+                            >
+                                <i className={`fa-brands ${tab.icon} text-lg ${activeTab === tab.id ? 'text-brand-blue' : ''}`}></i>
+                                {tab.label}
+                            </button>
+                        ))}
+                    </nav>
+
+                    {/* Content Area */}
+                    <main className="min-h-[500px]">
+                        {activeTab === 'facebook' && <PlatformStrategy data={fbData} platform="facebook" />}
+                        {activeTab === 'instagram' && <PlatformStrategy data={igData} platform="instagram" />}
+                        {activeTab === 'pillars' && <ContentPillars />}
+                    </main>
+                    
+                    {/* Footer */}
+                    <footer className="text-center mt-16 pt-8 border-t border-brand-brown/30 text-brand-gray text-sm">
+                        Modern Heritage Design • Siam Magnet Interactive Strategy
+                    </footer>
+                </div>
+            );
+        };
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
